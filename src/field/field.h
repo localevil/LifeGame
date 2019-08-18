@@ -1,18 +1,17 @@
 #ifndef FIELD
 #define FIELD
-
-#include <SDL2/SDL.h>
+static const unsigned int CELL_SIDE = 10;
 
 typedef struct Field
 {
     unsigned int **fieldElements;
-    unsigned int height;
-    unsigned int width;
+    unsigned int height, width;
+
 }Field;
 
 Field* initField(unsigned int width, unsigned int size);
 
-void drowField(Field *f, SDL_Renderer* ren);
+void doForAll(Field* field, void (*func)(unsigned int i, unsigned int j));
 void deleteField(Field *f);
 void copyField(Field *f1, Field *f2);
 #endif

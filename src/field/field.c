@@ -5,6 +5,15 @@ unsigned int fieldSize(Field *f)
     return f->width * f->height;
 }
 
+void doForAll(Field* field, void (*func)(unsigned int i, unsigned int j))
+{
+    for (unsigned int i = 0; i < field->width; ++i) {
+        for (unsigned int j = 0; j < field->height; ++j) {
+            func(i ,j);
+        }
+    }
+}
+
 Field* initField(unsigned int width,unsigned int height)
 {
     Field *f = (Field*)malloc(sizeof (Field));
@@ -19,20 +28,6 @@ Field* initField(unsigned int width,unsigned int height)
     }
     return f;
 }
-
-void drowField(Field *f, SDL_Renderer* ren) {
-    SDL_SetRenderDrawColor(ren, 0, 220, 0, 50);
-    unsigned int rectWall = 10;
-    for (unsigned int i = 0; i < f->width; ++i) {
-        for (unsigned int j = 0; j < f->height; ++j) {
-            if (f->fieldElements[i][j] > 0) {
-                SDL_Rect rect = {(int)(i * rectWall), (int)(j * rectWall), (int)(rectWall), (int)(rectWall)};
-                SDL_RenderFillRect(ren, &rect);
-            }
-        }
-    }
-}
-
 
 void deleteField(Field *f) {
     for (unsigned int i = 0; i < f->width; ++i) {
