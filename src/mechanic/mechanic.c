@@ -1,33 +1,33 @@
 #include "mechanic.h"
 
-int processLife(Field *f) {
-    Field *newField = initField(f->width, f->height);
-    for (unsigned int i = 0; i < f->width; ++i) {
-        for (unsigned int j = 0; j < f->height; ++j) {
-            int lifeCount = checkLife(f, i, j);
-            if (f->fieldElements[i][j] == 1
+void processLife(Field *f) {
+    Field *newField = initField(getWidth(f), getWidth(f));
+    for (uint32_t i = 0; i < getWidth(f); ++i) {
+        for (uint32_t j = 0; j < getHeight(f); ++j) {
+            uint32_t lifeCount = checkLife(f, i, j);
+            if (*fieldElm(f,i, j) == 1
                        && lifeCount > 2 && lifeCount < 5) {
-                newField->fieldElements[i][j] = 1;
+                *fieldElm(newField, i, j) = 1;
             } else if (lifeCount == 3)
             {
-                newField->fieldElements[i][j] = 1;
+                *fieldElm(newField, i, j) = 1;
             }
         }
     }
     copyField(f, newField);
     deleteField(newField);
-    return 0;
+    return;
 }
 
-int checkLife(Field *f,unsigned int x,unsigned int y) {
-    int lifeCounter = 0;
-    for (int i = -1; i < 2; ++i) {
-        for (int j = -1; j < 2; ++j) {
-            int firstInd = (int)x + i;
-            int secondInd = (int)y + j;
+uint32_t checkLife(Field *f, uint32_t x, uint32_t y) {
+    uint32_t lifeCounter = 0;
+    for (int32_t i = -1; i < 2; ++i) {
+        for (int32_t j = -1; j < 2; ++j) {
+            int32_t firstInd = (int32_t)x + i;
+            int32_t secondInd = (int32_t)y + j;
             if (firstInd >= 0 && secondInd >= 0
-                    && firstInd < (int)f->width && secondInd < (int)f->height
-                    && f->fieldElements[firstInd][secondInd] > 0)
+                    && firstInd < (int32_t)getWidth(f) && secondInd < (int32_t)getHeight(f)
+                    && *fieldElm(f,(uint32_t)firstInd, (uint32_t)secondInd) > 0)
                 lifeCounter++;
         }
     }

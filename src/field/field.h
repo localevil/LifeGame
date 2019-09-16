@@ -1,17 +1,17 @@
-#ifndef FIELD
-#define FIELD
-static const unsigned int CELL_SIDE = 10;
+#pragma once
 
-typedef struct Field
-{
-    unsigned int **fieldElements;
-    unsigned int height, width;
+#include <stdint.h>
 
-}Field;
+typedef struct Field Field;
 
-Field* initField(unsigned int width, unsigned int size);
+typedef void (*elementHandler)(uint32_t i, uint32_t j);
 
-void doForAll(Field* field, void (*func)(unsigned int i, unsigned int j));
+uint32_t getWidth(Field* field);
+uint32_t getHeight(Field* field);
+uint32_t* fieldElm(Field* field, uint32_t i, uint32_t j);
+
+Field* initField(uint32_t width, uint32_t size);
+
+void doForAll(Field* field, elementHandler);
 void deleteField(Field *f);
 void copyField(Field *f1, Field *f2);
-#endif

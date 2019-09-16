@@ -1,7 +1,9 @@
-#ifndef UTILS
-#define UTILS
+#pragma once
 
-#include "SDL2/SDL.h"
+#include "../constants.c"
+#include "../field/field.h"
 
 SDL_Texture* createTextTexture(SDL_Renderer *renderer, const char* message);
-#endif
+void init(void);
+void processEvents(void);
+void freeGameResorces(void);

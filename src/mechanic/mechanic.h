@@ -1,8 +1,8 @@
-#ifndef MECHANIC
-#define MECHANIC
+#pragma once
+
+#include <stdint.h>
 
 #include "../field/field.h"
 
-int processLife(Field *f);
-int checkLife(Field *f,unsigned int x,unsigned int y);
-#endif
+void processLife(Field *f);
+uint32_t checkLife(Field *f, uint32_t x, uint32_t y);

@@ -15,6 +15,7 @@ set(HDR
 
 set(SRC
     "src/main.c"
+    "src/constants.c"
     "src/field/field.c"
     "src/mechanic/mechanic.c"
     "src/utils/utils.c"

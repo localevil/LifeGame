@@ -1,47 +1,56 @@
 #include "field.h"
+#include <stdlib.h>
 
-unsigned int fieldSize(Field *f)
+typedef struct Field
+{
+    uint32_t *fieldElements;
+    uint32_t height, width;
+
+}Field;
+
+uint32_t getWidth(Field* field)
+{
+    return field->width;
+}
+uint32_t getHeight(Field* field)
+{
+    return field->height;
+}
+uint32_t* fieldElm(Field* field, uint32_t i, uint32_t j)
+{
+    return &field->fieldElements[i * field->height + j];
+}
+
+uint32_t fieldSize(Field *f)
 {
     return f->width * f->height;
 }
 
-void doForAll(Field* field, void (*func)(unsigned int i, unsigned int j))
+void doForAll(Field* field, elementHandler func)
 {
-    for (unsigned int i = 0; i < field->width; ++i) {
-        for (unsigned int j = 0; j < field->height; ++j) {
+    for (uint32_t i = 0; i < field->width; ++i) {
+        for (uint32_t j = 0; j < field->height; ++j) {
             func(i ,j);
         }
     }
 }
 
-Field* initField(unsigned int width,unsigned int height)
+Field* initField(uint32_t width, uint32_t height)
 {
-    Field *f = (Field*)malloc(sizeof (Field));
+    Field *f = {0};
     f->width = width;
     f->height = height;
-    f->fieldElements = (unsigned int**)malloc(width * sizeof(int*));
-    for (unsigned int i = 0; i < width; i++) {
-        f->fieldElements[i] = (unsigned int*)malloc(height * sizeof(int));
-        for (unsigned int j = 0; j < height; ++j) {
-            f->fieldElements[i][j] = 0;
-        }
-    }
+    f->fieldElements = (uint32_t*)calloc(fieldSize(f), sizeof(uint32_t));
     return f;
 }
 
 void deleteField(Field *f) {
-    for (unsigned int i = 0; i < f->width; ++i) {
-            free(f->fieldElements[i]);
-        }
-    free(f->fieldElements);
     free(f);
 }
 
 void copyField(Field *f1, Field *f2) {
-    for (unsigned int i = 0; i < f2->width; ++i) {
-        for (unsigned int j = 0; j < f2->height; ++j) {
-            f1->fieldElements[i][j] = f2->fieldElements[i][j];
-        }
+    for (uint32_t i = 0; i < fieldSize(f2); ++i) {
+        f1->fieldElements[i] = f2->fieldElements[i];
     }
 }
 
