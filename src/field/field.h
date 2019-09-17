@@ -4,7 +4,7 @@
 
 typedef struct Field Field;
 
-typedef void (*elementHandler)(uint32_t i, uint32_t j);
+typedef void (*elementHandler)(Field* field, uint32_t i, uint32_t j);
 
 uint32_t getWidth(Field* field);
 uint32_t getHeight(Field* field);

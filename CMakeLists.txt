@@ -11,6 +11,7 @@ set(HDR
     "src/field/field.h"
     "src/mechanic/mechanic.h"
     "src/utils/utils.h"
+    "src/renderer/renderer.h"
     )
 
 set(SRC
@@ -19,6 +20,7 @@ set(SRC
     "src/field/field.c"
     "src/mechanic/mechanic.c"
     "src/utils/utils.c"
+    "src/renderer/renderer.c"
 )
 
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})

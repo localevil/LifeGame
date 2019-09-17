@@ -30,7 +30,7 @@ void doForAll(Field* field, elementHandler func)
 {
     for (uint32_t i = 0; i < field->width; ++i) {
         for (uint32_t j = 0; j < field->height; ++j) {
-            func(i ,j);
+            func(field, i ,j);
         }
     }
 }

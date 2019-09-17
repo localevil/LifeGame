@@ -3,13 +3,10 @@
 
 #include "utils.h"
 
-static bool startLife = 0;
-
 typedef struct GameResorces
 {
     Field* field;
-
-    SDL_Renderer* renderer;
+    
     SDL_Window* window;
 }GameResorces;
 
@@ -22,7 +19,6 @@ static GameResorces* gameResorces;
 void freeGameResorces(void)
 {
     deleteField(gameResorces->field);
-    SDL_DestroyRenderer(gameResorces->renderer);
     SDL_DestroyWindow(gameResorces->window);
 }
 
@@ -41,8 +37,6 @@ void init() {
     SDL_Init(SDL_INIT_EVERYTHING);
     gameResorces->window = SDL_CreateWindow("Window", 1,0, (int32_t)WIN_WIDTH, (int32_t)(WIN_HEIGHT + BUTTON_HEIGTH), SDL_WINDOW_SHOWN);
     assert(gameResorces->window != NULL);
-    gameResorces->renderer = SDL_CreateRenderer(gameResorces->window, -1, SDL_RENDERER_ACCELERATED);
-    assert(gameResorces->renderer != NULL);
 
     const char* START_TEXT = "Start";
     const char* STOP_TEXT = "Stop";
@@ -52,35 +46,6 @@ void init() {
     STOP_TEXTURE  = createTextTexture(gameResorces->renderer, STOP_TEXT);
     CLEAR_TEXTURE = createTextTexture(gameResorces->renderer, CLEAR_TEXT);
     gameResorces->field = initField(WIN_WIDTH/CELL_SIDE, WIN_HEIGHT/CELL_SIDE);
-}
-
-void drawElement(uint32_t i, uint32_t j) {
-    if (*fieldElm(gameResorces->field, i, j) > 0) {
-        SDL_Rect rect = {(int32_t)(i * CELL_SIDE), (int32_t)(j * CELL_SIDE), (int32_t)(CELL_SIDE), (int32_t)(CELL_SIDE)};
-        SDL_RenderFillRect(gameResorces->renderer, &rect);
-    }
-}
-
-uint32_t renderAll(uint32_t endTime) {
-    uint32_t beginTime = SDL_GetTicks();
-    double delta = beginTime - endTime;
-    if (delta > 1000/FPS) {
-        SDL_RenderClear(gameResorces->renderer);
-        SDL_RenderCopy(gameResorces->renderer, (startLife
-                                  ? STOP_TEXTURE
-                                  : START_TEXTURE), NULL, &START_STOP_BUTTON);
-        SDL_RenderCopy(gameResorces->renderer, CLEAR_TEXTURE, NULL, &CLEAR_BUTTON);
-        SDL_SetRenderDrawColor(gameResorces->renderer, 0, 220, 0, 50);
-        doForAll(gameResorces->field, drawElement);
-        SDL_SetRenderDrawColor(gameResorces->renderer, 255, 255, 255, 0);
-        SDL_RenderPresent(gameResorces->renderer);
-        if (startLife)
-        {
-            processLife(gameResorces->field);
-        }
-        endTime = beginTime;
-    }
-    return endTime;
 }
 
 void mouseEventProcessing(void) {
@@ -100,37 +65,5 @@ void mouseEventProcessing(void) {
         {
            gameResorces->field = initField(WIN_WIDTH/CELL_SIDE, WIN_HEIGHT/CELL_SIDE);
         }
-    }
-}
-
-void processEvents() {
-    uint32_t endTime = SDL_GetTicks();
-    SDL_Event event;
-    bool isRuned = true;
-    while(isRuned)
-    {
-        while(SDL_PollEvent(&event))
-        {
-            switch (event.type)
-            {
-            case SDL_MOUSEBUTTONDOWN:
-                mouseEventProcessing();
-                break;
-            case SDL_QUIT:
-                isRuned = 0;
-                break;
-            case SDL_KEYDOWN:
-                switch(event.key.keysym.sym)
-                {
-                case SDLK_UP:
-                    break;
-                case SDLK_DOWN:
-                    break;
-                case SDLK_EJECT:
-                    break;
-                }
-            }
-        }
-        endTime = renderAll(endTime);
     }
 }

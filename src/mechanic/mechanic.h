@@ -1,7 +1,4 @@
 #pragma once
-
-#include <stdint.h>
-
 #include "../field/field.h"
 
 void processLife(Field *f);
