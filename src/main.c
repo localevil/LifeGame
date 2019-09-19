@@ -1,39 +1,23 @@
+#include "field/field.h"
 #include "utils/utils.h"
+#include "mechanic/mechanic.h"
+#include "renderer/renderer.h"
+#include "constants.c"
+
+const uint32_t WIN_WIDTH = 960, WIN_HEIGHT = 540;
 
 int main()
 {
-    bool startLife = false;
-    uint32_t endTime = SDL_GetTicks();
-    SDL_Event event;
-    bool isRuned = true;
-    while(isRuned)
+    Field *field = initField(WIN_WIDTH, WIN_HEIGHT);
+    initRenderer(field);
+    state_t state;
+    while(state = processEvents())
     {
-        while(SDL_PollEvent(&event))
-        {
-            switch (event.type)
-            {
-                case SDL_MOUSEBUTTONDOWN:
-                    mouseEventProcessing(*startLife);
-                    break;
-                case SDL_QUIT:
-                    isRuned = 0;
-                    break;
-                case SDL_KEYDOWN:
-                    switch(event.key.keysym.sym)
-                {
-                    case SDLK_UP:
-                        break;
-                    case SDLK_DOWN:
-                        break;
-                    case SDLK_EJECT:
-                        break;
-                }
-            }
-        }
-        if (startLife)
+        if (state == LIFE_STARTED)
         {
             processLife(field);
         }
-        renderAll(endTime, startLife);
+        renderAll(field, state);
     }
+    deleteRenderer();
 }

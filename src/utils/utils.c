@@ -1,26 +1,9 @@
+#include "utils.h"
+
 #include <SDL2/SDL_ttf.h>
 #include <assert.h>
 
-#include "utils.h"
-
-typedef struct GameResorces
-{
-    Field* field;
-    
-    SDL_Window* window;
-}GameResorces;
-
-static SDL_Texture* START_TEXTURE;
-static SDL_Texture* STOP_TEXTURE;
-static SDL_Texture* CLEAR_TEXTURE;
-
-static GameResorces* gameResorces;
-
-void freeGameResorces(void)
-{
-    deleteField(gameResorces->field);
-    SDL_DestroyWindow(gameResorces->window);
-}
+#include "../constants.c"
 
 SDL_Texture* createTextTexture(SDL_Renderer *renderer, const char* message) {
     TTF_Init();
@@ -33,37 +16,50 @@ SDL_Texture* createTextTexture(SDL_Renderer *renderer, const char* message) {
     return SDL_CreateTextureFromSurface(renderer, text);
 }
 
-void init() {
-    SDL_Init(SDL_INIT_EVERYTHING);
-    gameResorces->window = SDL_CreateWindow("Window", 1,0, (int32_t)WIN_WIDTH, (int32_t)(WIN_HEIGHT + BUTTON_HEIGTH), SDL_WINDOW_SHOWN);
-    assert(gameResorces->window != NULL);
-
-    const char* START_TEXT = "Start";
-    const char* STOP_TEXT = "Stop";
-    const char* CLEAR_TEXT = "Clear";
-
-    START_TEXTURE = createTextTexture(gameResorces->renderer, START_TEXT);
-    STOP_TEXTURE  = createTextTexture(gameResorces->renderer, STOP_TEXT);
-    CLEAR_TEXTURE = createTextTexture(gameResorces->renderer, CLEAR_TEXT);
-    gameResorces->field = initField(WIN_WIDTH/CELL_SIDE, WIN_HEIGHT/CELL_SIDE);
-}
-
-void mouseEventProcessing(void) {
+void mouseEventProcessing(Field *field, state_t *state) {
     int32_t mouseX, mouseY;
     SDL_GetMouseState(&mouseX,&mouseY);
-    uint32_t* elm = fieldElm(gameResorces->field, (uint32_t)mouseX/CELL_SIDE, (uint32_t)mouseY/CELL_SIDE);
-    if (mouseY < (int32_t)WIN_HEIGHT) {
-        if (mouseX < (int32_t)WIN_WIDTH)
+    uint32_t* elm = fieldElm(field, (uint32_t)mouseX/CELL_SIDE, (uint32_t)mouseY/CELL_SIDE);
+    if (mouseY < (int32_t)getHeight(field)) {
+        if (mouseX < (int32_t)getWidth(field))
             *elm = (*elm ? 0 : 1);
     }
     else {
-        if (mouseX > (int32_t)(WIN_WIDTH - BUTTON_WIDTH))
+        if (mouseX > (int32_t)(getWidth(field) - BUTTON_WIDTH))
         {
-            startLife = (startLife ? 0 : 1);
+            *state = (*state == LIFE_STARTED ? LIFE_STOPED : LIFE_STARTED);
         }
         else if (mouseX > 0 && mouseX < (int32_t)BUTTON_WIDTH)
         {
-           gameResorces->field = initField(WIN_WIDTH/CELL_SIDE, WIN_HEIGHT/CELL_SIDE);
+           field = initField(getWidth(field)/CELL_SIDE, getHeight(field)/CELL_SIDE);
         }
     }
+}
+state_t processEvents()
+{
+    state_t state = CONTINUE_GAME;
+    static SDL_Event event;
+    while(SDL_PollEvent(&event))
+    {
+        switch (event.type)
+        {
+            case SDL_MOUSEBUTTONDOWN:
+                state = mouseEventProcessing(*startLife);
+                break;
+            case SDL_QUIT:
+                state = STOP_GAME;
+                break;
+            case SDL_KEYDOWN:
+                switch(event.key.keysym.sym)
+                {
+                    case SDLK_UP:
+                        break;
+                    case SDLK_DOWN:
+                        break;
+                    case SDLK_EJECT:
+                        break;
+                }
+        }
+    }
+    return state;
 }

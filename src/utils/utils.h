@@ -1,9 +1,12 @@
 #pragma once
-
-#include "../constants.c"
 #include "../field/field.h"
 
-SDL_Texture* createTextTexture(SDL_Renderer *renderer, const char* message);
-void init(void);
-void processEvents(void);
-void freeGameResorces(void);
+enum {
+    STOP_GAME,
+    CONTINUE_GAME,
+    LIFE_STARTED,
+    LIFE_STOPED
+} state_t;
+
+void init(Field *field);
+state_t processEvents(Field *field);
