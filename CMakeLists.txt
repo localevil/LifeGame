@@ -8,20 +8,20 @@ set(libs
 )
 
 set(HDR
+    "src/constants.h"
     "src/field/field.h"
     "src/mechanic/mechanic.h"
-    "src/utils/utils.h"
     "src/renderer/renderer.h"
     )
 
 set(SRC
-    "src/main.c"
-    "src/constants.c"
     "src/field/field.c"
+    "src/main.c"
     "src/mechanic/mechanic.c"
-    "src/utils/utils.c"
     "src/renderer/renderer.c"
 )
+
+add_compile_options(-fexceptions --std=c11 -Wall -O3)
 
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
 
