@@ -1,7 +1,11 @@
 #include "mechanic.h"
 
+#include <SDL2/SDL.h>
+#include <assert.h>
+#include <stdbool.h>
+
 void processLife(Field *f) {
-    Field *newField = initField(getWidth(f), getWidth(f));
+    Field *newField = initField(getWidth(f), getHeight(f));
     for (uint32_t i = 0; i < getWidth(f); ++i) {
         for (uint32_t j = 0; j < getHeight(f); ++j) {
             uint32_t lifeCount = checkLife(f, i, j);
@@ -32,4 +36,52 @@ uint32_t checkLife(Field *f, uint32_t x, uint32_t y) {
         }
     }
     return lifeCounter;
+}
+
+void mouseEventProcessing(Field *field, state_t *state) {
+    int32_t mouseX, mouseY;
+    SDL_GetMouseState(&mouseX,&mouseY);
+    uint32_t* elm = fieldElm(field, (uint32_t)mouseX/CELL_SIDE, (uint32_t)mouseY/CELL_SIDE);
+    if (mouseY < (int32_t)WIN_HEIGHT) {
+        if (mouseX < (int32_t)WIN_WIDTH)
+            *elm = (*elm ? 0 : 1);
+    }
+    else {
+        if (mouseX > (int32_t)(WIN_WIDTH- BUTTON_WIDTH))
+        {
+            *state = (*state == LIFE_PROCESSED ? CONTINUE_GAME : LIFE_PROCESSED);
+        }
+        else if (mouseX > 0 && mouseX < (int32_t)BUTTON_WIDTH)
+        {
+           clearField(field);
+        }
+    }
+}
+
+
+void processEvents(Field* field, state_t* state)
+{
+    static SDL_Event event;
+    while(SDL_PollEvent(&event))
+    {
+        switch (event.type)
+        {
+            case SDL_MOUSEBUTTONDOWN:
+                mouseEventProcessing(field, state);
+                break;
+            case SDL_QUIT:
+                *state = STOP_GAME;
+                break;
+            case SDL_KEYDOWN:
+                switch(event.key.keysym.sym)
+                {
+                    case SDLK_UP:
+                        break;
+                    case SDLK_DOWN:
+                        break;
+                    case SDLK_EJECT:
+                        break;
+                }
+        }
+    }
 }

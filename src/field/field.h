@@ -15,3 +15,4 @@ Field* initField(uint32_t width, uint32_t size);
 void doForAll(Field* field, elementHandler);
 void deleteField(Field *f);
 void copyField(Field *f1, Field *f2);
+void clearField(Field* field);

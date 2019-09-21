@@ -21,7 +21,7 @@ uint32_t* fieldElm(Field* field, uint32_t i, uint32_t j)
     return &field->fieldElements[i * field->height + j];
 }
 
-uint32_t fieldSize(Field *f)
+uint32_t fieldSize(Field* f)
 {
     return f->width * f->height;
 }
@@ -37,15 +37,23 @@ void doForAll(Field* field, elementHandler func)
 
 Field* initField(uint32_t width, uint32_t height)
 {
-    Field *f = {0};
+    Field *f = calloc(1, sizeof(Field));
     f->width = width;
     f->height = height;
-    f->fieldElements = (uint32_t*)calloc(fieldSize(f), sizeof(uint32_t));
+    f->fieldElements = calloc(fieldSize(f), sizeof(uint32_t));
     return f;
 }
 
-void deleteField(Field *f) {
+void deleteField(Field* f)
+{
+    free(f->fieldElements);
     free(f);
+}
+
+void clearField(Field *field)
+{
+    free(field->fieldElements);
+    field->fieldElements = calloc(fieldSize(field), sizeof(uint32_t));
 }
 
 void copyField(Field *f1, Field *f2) {

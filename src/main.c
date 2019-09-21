@@ -1,23 +1,22 @@
 #include "field/field.h"
-#include "utils/utils.h"
 #include "mechanic/mechanic.h"
 #include "renderer/renderer.h"
-#include "constants.c"
-
-const uint32_t WIN_WIDTH = 960, WIN_HEIGHT = 540;
+#include "utils/utils.h"
 
 int main()
 {
-    Field *field = initField(WIN_WIDTH, WIN_HEIGHT);
-    initRenderer(field);
-    state_t state;
-    while(state = processEvents())
+    Field *field = field =initField(WIN_WIDTH/CELL_SIDE,WIN_HEIGHT/CELL_SIDE);
+    initRenderer();
+    state_t state = CONTINUE_GAME;
+    for(;state;processEvents(field, &state))
     {
-        if (state == LIFE_STARTED)
+        bool startLife = state == LIFE_PROCESSED;
+        if (startLife)
         {
             processLife(field);
         }
-        renderAll(field, state);
+        renderAll(field, startLife);
     }
     deleteRenderer();
+    deleteField(field);
 }
